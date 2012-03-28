@@ -3,12 +3,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <@html.css "application"/>
+    <% if @options[:bootstrap] %> <@html.css "bootstrap"/> <% end %>
+
     <title>Vraptor Scaffold</title>
     ${head}
   </head>
 
   <body>
     ${body}
+    <% if @options[:bootstrap] %> <@html.js "bootstrap"/> <% end %>
     <@html.js "jquery.min"/>
     <@html.js "application"/>
   </body>

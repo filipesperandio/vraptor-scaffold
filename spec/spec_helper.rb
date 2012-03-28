@@ -20,7 +20,12 @@ def mock_objectify_config_file
 end
 
 def exists_and_identical?(source, created)
-  c = File.open(created).read.gsub( /\r/m, "" )
-  c2 = File.open(source).read.gsub( /\r/m, "" )
+  c = sanitize(File.open(created).read)
+  c2 = sanitize(File.open(source).read)
   c.should be == c2
+end
+
+private
+def sanitize(text)
+  text.gsub( /\r/m, "" ).gsub(/\n/m, "").gsub(/ /m, "")
 end

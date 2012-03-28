@@ -40,6 +40,9 @@ class AppGenerator < VraptorScaffold::Base
   class_option :skip_eclipse, :type => :boolean, :aliases => "-E",
                :desc => "Skip Eclipse files"
 
+  class_option :bootstrap, :type => :boolean, 
+               :desc => "Bootstrap files"
+  
   def self.source_root
     File.join File.dirname(__FILE__), "templates"
   end
@@ -157,7 +160,7 @@ class AppGenerator < VraptorScaffold::Base
 
   def configure_template_engine
     templates = {"jsp" => JspTemplateEngine, "ftl" => FreemarkerTemplateEngine}
-    templates[options[:template_engine]].new(project_path).configure if templates[options[:template_engine]]
+    templates[options[:template_engine]].new(project_path, @options).configure if templates[options[:template_engine]]
   end
 
   def create_test
@@ -169,6 +172,18 @@ class AppGenerator < VraptorScaffold::Base
     empty_directory File.join test_src, options[:repositories_package]
 
     directory("resources-test", Configuration::TEST_RESOURCES)
+  end
+
+  def create_bootstrap_files
+    if @options[:bootstrap]
+      javascripts = File.join Configuration::WEB_APP, "javascripts"
+      stylesheets = File.join Configuration::WEB_APP, "stylesheets"
+      images = File.join Configuration::WEB_APP, "images"
+      copy_file("bootstrap/bootstrap.js", "#{javascripts}/bootstrap.js")
+      copy_file("bootstrap/bootstrap.css", "#{stylesheets}/bootstrap.css")
+      copy_file("bootstrap/glyphicons-halflings-white.png", "#{images}/glyphicons-halflings-white.png")
+      copy_file("bootstrap/glyphicons-halflings.png", "#{images}/glyphicons-halflings.png")
+    end
   end
 
   private

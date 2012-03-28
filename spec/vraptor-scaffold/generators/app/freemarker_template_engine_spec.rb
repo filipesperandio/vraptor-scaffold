@@ -46,15 +46,35 @@ describe FreemarkerTemplateEngine do
     end
 
     it "should create decorator file" do
-      source = "#{FreemarkerTemplateEngine.source_root}/main.ftl"
       destination = "#{@decorators}/main.ftl"
-      exists_and_identical?(source, destination)
+      content = File.read(destination)
+      content.include?("bootstrap").should be_false
+      content.empty?.should be_false
     end
 
     it "should create html macro file" do
       source = "#{FreemarkerTemplateEngine.source_root}/macros/html.ftl"
       destination = "#{@webapp}/macros/html.ftl"
       exists_and_identical?(source, destination)
+    end
+  end
+
+  context "bootstrap setup" do
+    before(:all) do
+      AppGenerator.new(@project_path, ["--template-engine=ftl", "--bootstrap"]).invoke_all
+    end
+
+    after(:all) do
+      FileUtils.remove_dir(@project_path)
+    end
+
+    it "should add bootstrap js and css" do
+      main = "#{@decorators}/main.ftl"
+      js_added = '<@html.js "bootstrap"/>'
+      css_added = '<@html.css "bootstrap"/>'
+      content = File.read(main)
+      content.include?(js_added).should be_true
+      content.include?(css_added).should be_true
     end
   end
 end

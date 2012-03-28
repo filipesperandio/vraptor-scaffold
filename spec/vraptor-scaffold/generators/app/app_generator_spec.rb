@@ -5,7 +5,7 @@ describe AppGenerator do
   context "build new application" do
     before(:all) do
       @project_path = "src/vraptor-scaffold"
-      AppGenerator.new(@project_path, ["-b=mvn", "-r=repository", "-m=domain", "-c=control"]).invoke_all
+      AppGenerator.new(@project_path, ["-b=mvn", "-r=repository", "-m=domain", "-c=control", "--bootstrap"]).invoke_all
     end
 
     after(:all) do
@@ -187,6 +187,17 @@ describe AppGenerator do
         File.exists?(destination).should be_true
       end
 
+      it "should create bootstrap files" do
+        bootstrap = Array.new
+        bootstrap <<  "#{@webapp}/stylesheets/bootstrap.css"
+        bootstrap << "#{@webapp}/javascripts/bootstrap.js"
+        bootstrap << "#{@webapp}/images/glyphicons-halflings-white.png"
+        bootstrap << "#{@webapp}/images/glyphicons-halflings.png"
+        bootstrap.each do |bs_file|
+          File.exists?(bs_file).should be_true
+        end
+      end
+
       it "should create application js" do
         destination = "#{@webapp}/javascripts/application.js"
         File.exists?(destination).should be_true
@@ -265,14 +276,14 @@ describe AppGenerator do
 
     it "should configure freemarker template engine" do
       template = mock(FreemarkerTemplateEngine)
-      FreemarkerTemplateEngine.stub!(:new).with(@project_path).and_return(template)
+      FreemarkerTemplateEngine.stub!(:new).and_return(template)
       template.should_receive(:configure)
       AppGenerator.new(@project_path, ["--template-engine=ftl"]).invoke_all
     end
 
     it "should configure jsp template engine" do
       template = mock(JspTemplateEngine)
-      JspTemplateEngine.stub!(:new).with(@project_path).and_return(template)
+      JspTemplateEngine.stub!(:new).and_return(template)
       template.should_receive(:configure)
       AppGenerator.new(@project_path).invoke_all
     end

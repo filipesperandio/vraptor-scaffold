@@ -1,26 +1,43 @@
 <c:if test="${not empty errors}">
-	<c:forEach items="${errors}" var="error">
-		${error.category} - ${error.message}<br />
-	</c:forEach>
+<c:forEach items="${errors}" var="error">
+<div class="control-group error">
+  <label class="control-label" for="inputError"> ${error.category} - ${error.message}</label>
+</div>
+</c:forEach>
 </c:if>
 
-<form action="<%= path %>" method="post">
-  
-	<c:if test="${not empty <%= model_parameter_name %>.id}">
-		<input type="hidden" name="<%= model_parameter_name %>.id" value="${<%= model_parameter_name%>.id}"/>
-		<input type="hidden" name="_method" value="put"/>
-	</c:if>
+<div class="row">
+  <div class="span6">
+    <div class="well">
+      <form action="<%= path %>" method="post" class="form-horizontal">
+        <fieldset>
+          <legend><%= model_parameter_name %></legend>
+          <c:if test="${not empty <%= model_parameter_name %>.id}">
+            <input type="hidden" name="<%= model_parameter_name %>.id" value="${<%= model_parameter_name%>.id}"/>
+            <input type="hidden" name="_method" value="put"/>
+          </c:if>
 
-<% @attributes.each do |att| -%>
-	<div class="field">
-		<%= att.html_label %>:<br />
-		<input type="text" name="<%= model_parameter_name %>.<%=att.name%>" value="${<%=model_parameter_name%>.<%=att.name%>}"/>
-	</div>
-<% end -%>
+          <% @attributes.each do |att| -%>
+            <div class="control-group">
+              <label class="control-label" for="<%= model_parameter_name %>.<%=att.name%>">
+                <%= att.html_label %>
+              </label>
+              <div class="controls">
+                <input type="text" name="<%= model_parameter_name %>.<%=att.name%>" id="<%= model_parameter_name %>.<%=att.name%>" value="${<%=model_parameter_name%>.<%=att.name%>}"/>
+              </div>
+            </div>
+          <% end -%>
 
-<div class="actions">
-	<button type="submit">send</button>
-	</div>
-</form>
+          <div class="form-actions">
+            <div class="pull-right">
+              <button type="submit" class="btn btn-primary">Save!</button>
+              <a href="<%= path %>" class="btn">Cancel</a>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+  <div class="span6"></div>
+</div>
 
-<a href="<%= path %>">Back</a>

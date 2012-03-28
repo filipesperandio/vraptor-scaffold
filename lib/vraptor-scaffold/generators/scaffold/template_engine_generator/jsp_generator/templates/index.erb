@@ -1,36 +1,45 @@
-<head>
-	<title><%= class_name %> [index]</title>
-</head>
-<body>
+<header class="jumbotron subhead" id="overview">
 	<h1>Listing <%= class_name.pluralize %></h1>
+</header>
 
-	<table>
-		<tr>
-			<%- @attributes.each do |att| -%>
-			<th><%= att.html_label %></th>
-			<%- end -%>
-			<th></th>
-			<th></th>
-			<th></th>
-		</tr>
+
+<div class="row">
+	<div class="span8">
+		<br />
 
 		<c:forEach items="${<%=model_parameter_name%>List}" var="<%=model_parameter_name%>">
-			<tr>
-				<%- @attributes.each do |att| -%>
-				<td><%= "${#{model_parameter_name}.#{att.name}}" %></td>
-				<%- end -%>
-				<td><a href="<%= path "/${#{model_parameter_name}.id}" %>">show</a></td>
-				<td><a href="<%= path "/${#{model_parameter_name}.id}/edit" %>">edit</a></td>
-				<td>
-					<form action="<%= path "/${#{model_parameter_name}.id}" %>" method="post">
-						<input type="hidden" name="_method" value="delete"/>
-						<button type="submit" onclick="return confirm('Are you sure?')">destroy</button>
-					</form>
-				</td>
-			</tr>
-		</c:forEach>
-	</table>
+    <div class="row">
+      <div class="span8">
+        <div class="well">
 
-	<br />
-	<a href="<%= path '/new' %>">New <%= class_name %></a> 
-</body>
+          <%- @attributes.each do |att| -%>
+            <div class="content-body">
+              <%= att.html_label %>: <%= "${#{model_parameter_name}.#{att.name}}" %><br />
+            </div>
+          <%- end -%>
+          <br />
+
+          <div class="controls admin" ng:show="app.admin()">
+            <a href="<%= path "/${#{model_parameter_name}.id}" %>" class="btn">show</a>
+            <a href="<%= path "/${#{model_parameter_name}.id}/edit" %>" class="btn">edit</a>
+            <form action="<%= path "/${#{model_parameter_name}.id}" %>" method="post" id=<%= "${#{model_parameter_name}.id}" %>>
+              <a ng:click="return confirm('Delete <%= "${#{model_parameter_name}.id}" %> ?')" class="btn">destroy</a>
+              <input type="hidden" name="_method" value="delete" />
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+		</c:forEach>
+
+    <div class="row">
+      <div class="span8">
+        <div class="well">
+          <a href="<%= path '/new' %>">New <%= class_name %></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
