@@ -8,12 +8,17 @@
     <title><decorator:title default="Vraptor Scaffold"/></title>
     <% if @options[:bootstrap] %>
       <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.css" />
+    <% else %>
+      <link rel="stylesheet" type="text/css" href="/stylesheets/application.css"/>
     <% end %>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/application.css"/>
     <decorator:head/>
   </head>
   <body>
-    <decorator:body/>
+
+    <div class="container">
+      <decorator:body />
+    </div>
+
     <% if @options[:bootstrap] %>
       <script type="text/javascript" src="/javascripts/bootstrap.js"></script>
     <% end %>

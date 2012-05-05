@@ -19,11 +19,11 @@
           <%- end -%>
           <br />
 
-          <div class="controls admin" ng:show="app.admin()">
-            <a href="<%= path "/${#{model_parameter_name}.id}" %>" class="btn">show</a>
-            <a href="<%= path "/${#{model_parameter_name}.id}/edit" %>" class="btn">edit</a>
+          <div class="controls admin">
             <form action="<%= path "/${#{model_parameter_name}.id}" %>" method="post" id=<%= "${#{model_parameter_name}.id}" %>>
-              <a ng:click="return confirm('Delete <%= "${#{model_parameter_name}.id}" %> ?')" class="btn">destroy</a>
+              <a href="<%= path "/${#{model_parameter_name}.id}" %>" class="btn">show</a>
+              <a href="<%= path "/${#{model_parameter_name}.id}/edit" %>" class="btn">edit</a>
+              <button type="submit" onclick="return confirm('Are you sure?')" class="btn">destroy</a>
               <input type="hidden" name="_method" value="delete" />
             </form>
           </div>
