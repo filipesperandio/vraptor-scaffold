@@ -40,9 +40,6 @@ class AppGenerator < VraptorScaffold::Base
   class_option :skip_eclipse, :type => :boolean, :aliases => "-E",
                :desc => "Skip Eclipse files"
 
-  class_option :bootstrap, :type => :boolean, 
-               :desc => "Bootstrap files"
-  
   def self.source_root
     File.join File.dirname(__FILE__), "templates"
   end
@@ -175,15 +172,13 @@ class AppGenerator < VraptorScaffold::Base
   end
 
   def create_bootstrap_files
-    if @options[:bootstrap]
-      javascripts = File.join Configuration::WEB_APP, "javascripts"
-      stylesheets = File.join Configuration::WEB_APP, "stylesheets"
-      images = File.join Configuration::WEB_APP, "images"
-      copy_file("bootstrap/bootstrap.js", "#{javascripts}/bootstrap.js")
-      copy_file("bootstrap/bootstrap.css", "#{stylesheets}/bootstrap.css")
-      copy_file("bootstrap/glyphicons-halflings-white.png", "#{images}/glyphicons-halflings-white.png")
-      copy_file("bootstrap/glyphicons-halflings.png", "#{images}/glyphicons-halflings.png")
-    end
+    javascripts = File.join Configuration::WEB_APP, "javascripts"
+    stylesheets = File.join Configuration::WEB_APP, "stylesheets"
+    images = File.join Configuration::WEB_APP, "images"
+    copy_file("bootstrap/bootstrap.js", "#{javascripts}/bootstrap.js")
+    copy_file("bootstrap/bootstrap.css", "#{stylesheets}/bootstrap.css")
+    copy_file("bootstrap/glyphicons-halflings-white.png", "#{images}/glyphicons-halflings-white.png")
+    copy_file("bootstrap/glyphicons-halflings.png", "#{images}/glyphicons-halflings.png")
   end
 
   private
