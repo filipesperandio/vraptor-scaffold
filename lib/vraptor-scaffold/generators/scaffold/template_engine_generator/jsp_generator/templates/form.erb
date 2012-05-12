@@ -1,3 +1,8 @@
+<head>
+  <script src="<%="/javascripts/#{class_name}.js"%>"></script>
+  <script src="<%="/javascripts/#{controller_class_name}.js"%>"></script>
+</head>
+
 <c:if test="${not empty errors}">
 <c:forEach items="${errors}" var="error">
 <div class="control-group error">
@@ -7,15 +12,18 @@
 </c:if>
 
 <script>
+  <%=model_list_name%> = [];
   <% att_size = @attributes.length-1 %>
-  <%=model_parameter_name%> = (new <%=class_name%>({
-    id : '<%="${#{model_parameter_name}.id}"%>',
-    <%- (0..att_size).each do |i| -%>
-      <%="#{@attributes[i].name}:"%> '<%="${#{model_parameter_name}.#{@attributes[i].name}}"%>'<%="," unless i == att_size %>
-    <%- end -%> }));
+  if(<%= "${#{model_parameter_name}}" %>) {
+    <%=model_list_name%>.push(new <%=class_name%>({
+      id : '<%="${#{model_parameter_name}.id}"%>',
+      <%- (0..att_size).each do |i| -%>
+        <%="#{@attributes[i].name}:"%> '<%="${#{model_parameter_name}.#{@attributes[i].name}}"%>'<%="," unless i == att_size %>
+      <%- end -%> }));
+  };
 </script>
 
-<div class="row">
+<div class="row" ng-controller="<%=controller_class_name%>">
   <div class="span6">
     <div class="well">
       <form action="<%= path %>" method="post" class="form-horizontal">
@@ -32,7 +40,8 @@
                 <%= att.html_label %>
               </label>
               <div class="controls">
-                <input type="text" name="<%= model_parameter_name %>.<%=att.name%>" id="<%= model_parameter_name %>.<%=att.name%>" value="${<%=model_parameter_name%>.<%=att.name%>}"/>
+                <input type="text" name="<%= model_parameter_name %>.<%=att.name%>" id="<%= model_parameter_name %>.<%=att.name%>" value="${<%=model_parameter_name%>.<%=att.name%>}"
+                        ng-model="<%= model_parameter_name %>.<%=att.name%>" />
               </div>
             </div>
           <% end -%>
