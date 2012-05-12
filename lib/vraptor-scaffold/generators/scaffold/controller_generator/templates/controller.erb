@@ -11,6 +11,7 @@ import br.com.caelum.vraptor.Put;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.Validator;
+import br.com.caelum.vraptor.view.Results;
 
 @Resource
 public class <%= controller_class_name %> {
@@ -27,8 +28,13 @@ public class <%= controller_class_name %> {
 	
 	@Get("<%= path %>")
 	public List<<%= class_name %>> index() {
-		return repository.findAll();
-	}
+    return repository.findAll();
+  }
+
+  @Get("<%= path %>.json")
+  public void indexJson() {
+    result.use(Results.json()).withoutRoot().from(index()).recursive().serialize();
+  }
 	
 	@Post("<%= path %>")
 	public void create(<%= class_name %> <%= model_parameter_name %>) {
@@ -56,6 +62,11 @@ public class <%= controller_class_name %> {
 		return repository.find(<%= model_parameter_name %>.getId());
 	}
 
+	@Get("<%= "#{path}/{#{model_parameter_name}.id}.json" %>")
+	public void showJson(<%= class_name %> <%= model_parameter_name %>) {
+		serialize(show(user));
+	}
+
 	@Get("<%= "#{path}/{#{model_parameter_name}.id}" %>")
 	public <%= class_name %> show(<%= class_name %> <%= model_parameter_name %>) {
 		return repository.find(<%= model_parameter_name %>.getId());
@@ -66,4 +77,8 @@ public class <%= controller_class_name %> {
 		repository.destroy(repository.find(<%= model_parameter_name %>.getId()));
 		result.redirectTo(this).index();  
 	}
+
+  private void serialize(Object object) {
+    result.use(Results.json()).withoutRoot().from(object).recursive().serialize();
+  }
 }
