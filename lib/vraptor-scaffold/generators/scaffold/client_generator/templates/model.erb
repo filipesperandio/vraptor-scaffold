@@ -1,0 +1,7 @@
+var <%= class_name %> = function(jsonObject) {
+  var self = jsonObject || {};	
+  self.location = '<%= "#{path}/" %>' + self.id;
+  self.edit = self.location + '/edit';
+
+  return self;
+}

@@ -54,6 +54,7 @@ class AppGenerator < VraptorScaffold::Base
     self.destination_root=(project_path)
     @project_name = project_path.split("/").last
     @dependency_manager = DependencyManager.new(options)
+    @javascripts = Configuration::JAVASCRIPT
   end
 
   def create_root_folder
@@ -146,9 +147,8 @@ class AppGenerator < VraptorScaffold::Base
   end
 
   def create_javascripts
-    javascripts = File.join Configuration::WEB_APP, "javascripts"
-    create_file File.join javascripts, "application.js"
-    add_file (File.join javascripts, "jquery.min.js"), get_jquery.body
+    create_file File.join @javascripts, "application.js"
+    add_file (File.join @javascripts, "jquery.min.js"), get_jquery.body
   end
 
   def configure_scaffold_properties
@@ -172,13 +172,17 @@ class AppGenerator < VraptorScaffold::Base
   end
 
   def create_bootstrap_files
-    javascripts = File.join Configuration::WEB_APP, "javascripts"
+    @javascripts = Configuration::JAVASCRIPT 
     stylesheets = File.join Configuration::WEB_APP, "stylesheets"
     images = File.join Configuration::WEB_APP, "images"
-    copy_file("bootstrap/bootstrap.js", "#{javascripts}/bootstrap.js")
+    copy_file("bootstrap/bootstrap.js", "#{@javascripts}/bootstrap.js")
     copy_file("bootstrap/bootstrap.css", "#{stylesheets}/bootstrap.css")
     copy_file("bootstrap/glyphicons-halflings-white.png", "#{images}/glyphicons-halflings-white.png")
     copy_file("bootstrap/glyphicons-halflings.png", "#{images}/glyphicons-halflings.png")
+  end
+
+  def create_angular_files
+    copy_file("angular/angular.js", "#{@javascripts}/angular.js")
   end
 
   private

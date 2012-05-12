@@ -14,6 +14,10 @@ class BaseScaffold < VraptorScaffold::Base
     @model.camelize
   end
 
+  def model_list_name
+    model_parameter_name.pluralize
+  end
+
   def test_class_name
     "#{class_name}Test"
   end

@@ -39,4 +39,8 @@ class ScaffoldGenerator < VraptorScaffold::Base
     templates = {"jsp" => JspGenerator, "ftl" => FreemarkerGenerator}
     templates[Configuration.template_engine].new(model, @generated_attributes).build
   end
+
+  def client_generator
+    ClientGenerator.new(model, @generated_attributes).build
+  end
 end

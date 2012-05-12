@@ -6,6 +6,15 @@
 </c:forEach>
 </c:if>
 
+<script>
+  <% att_size = @attributes.length-1 %>
+  <%=model_parameter_name%> = (new <%=class_name%>({
+    id : '<%="${#{model_parameter_name}.id}"%>',
+    <%- (0..att_size).each do |i| -%>
+      <%="#{@attributes[i].name}:"%> '<%="${#{model_parameter_name}.#{@attributes[i].name}}"%>'<%="," unless i == att_size %>
+    <%- end -%> }));
+</script>
+
 <div class="row">
   <div class="span6">
     <div class="well">

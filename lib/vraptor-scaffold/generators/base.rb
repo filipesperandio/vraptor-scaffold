@@ -19,3 +19,4 @@ require File.dirname(__FILE__) + '/scaffold/repository_generator/repository_gene
 require File.dirname(__FILE__) + '/scaffold/repository_generator/objectify_repository_generator'
 require File.dirname(__FILE__) + '/scaffold/controller_generator/controller_generator'
 require File.dirname(__FILE__) + '/scaffold/template_engine_generator/template_engine_generator'
+require File.dirname(__FILE__) + '/scaffold/client_generator/client_generator'

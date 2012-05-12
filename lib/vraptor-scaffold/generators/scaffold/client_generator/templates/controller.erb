@@ -1,0 +1,24 @@
+var <%= controller_class_name %> = function($scope, $http) {
+  $scope.<%= model_list_name %> = <%= model_list_name %> || [];
+
+  // Maybe routes is a better place
+  $scope.creation_path = '<%= "#{path}/new" %>';
+
+  $scope.list = function() {
+    $http.get('<%= path %>').success(function(data) {
+      $scope.<%= model_list_name %> = data;
+    });
+  }
+
+  $scope.save = function(<%= model_parameter_name %>) {
+    $http.post('<%= path %>', <%= model_parameter_name %>)
+  }
+
+  $scope.update = function(<%= model_parameter_name %>) {
+    $http.put('<%= path %>', <%= model_parameter_name %>)
+  }
+
+  $scope.destroy = function(<%= model_parameter_name %>) {
+    $http.delete(<%= model_parameter_name %>.location);
+  }
+}
