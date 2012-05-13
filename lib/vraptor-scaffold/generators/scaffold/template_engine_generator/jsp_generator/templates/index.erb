@@ -9,14 +9,10 @@
 
 <script>
   <%=model_list_name%> = [];
-  <c:forEach items="${<%=model_parameter_name%>List}" var="<%=model_parameter_name%>">
-  <% att_size = @attributes.length-1 %>
-  <%=model_list_name%>.push(new <%=class_name%>({
-    id : '<%="${#{model_parameter_name}.id}"%>',
-    <%- (0..att_size).each do |i| -%>
-      <%="#{@attributes[i].name}:"%> '<%="${#{model_parameter_name}.#{@attributes[i].name}}"%>'<%="," unless i == att_size %>
-    <%- end -%> }));
-  </c:forEach>
+  var list = ${json};
+  for(var i=0; i < list.length; i++) {
+    <%=model_list_name%>.push(new User(list[i]));
+  }
 </script>
 
 <div class="row" ng-controller="<%=controller_class_name%>">
