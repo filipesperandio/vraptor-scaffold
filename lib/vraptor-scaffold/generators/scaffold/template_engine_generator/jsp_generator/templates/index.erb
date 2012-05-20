@@ -11,7 +11,7 @@
   <%=model_list_name%> = [];
   var list = ${json};
   for(var i=0; i < list.length; i++) {
-    <%=model_list_name%>.push(new User(list[i]));
+    <%=model_list_name%>.push(new <%= class_name %>(list[i]));
   }
 </script>
 

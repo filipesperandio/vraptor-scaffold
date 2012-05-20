@@ -18,7 +18,7 @@
 <div class="row" ng-controller="<%=controller_class_name%>">
   <div class="span6">
     <div class="well">
-      <form action="<%= path %>" method="post" class="form-horizontal">
+      <form action="<%= path %>" method="post" class="form-horizontal" id="<%=model_parameter_name%>Form">
         <fieldset>
           <legend><%= model_parameter_name %></legend>
           <c:if test="${not empty <%= model_parameter_name %>.id}">

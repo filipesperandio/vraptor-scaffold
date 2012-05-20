@@ -7,7 +7,7 @@ class ClientGenerator < BaseScaffold
   end
   
   def create_js(template_name, file_name=template_name)
-    template("#{template_name}.erb", "#{Configuration::JAVASCRIPT}/#{file_name}.js")
+    template("#{template_name}.erb", "#{Configuration::JAVASCRIPTS}/#{file_name}.js")
   end
 
   def template_path

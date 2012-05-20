@@ -54,7 +54,9 @@ class AppGenerator < VraptorScaffold::Base
     self.destination_root=(project_path)
     @project_name = project_path.split("/").last
     @dependency_manager = DependencyManager.new(options)
-    @javascripts = Configuration::JAVASCRIPT
+    @javascripts = Configuration::JAVASCRIPTS
+    @stylesheets = Configuration::STYLESHEETS
+    @images = File.join Configuration::WEB_APP, "images"
   end
 
   def create_root_folder
@@ -172,13 +174,10 @@ class AppGenerator < VraptorScaffold::Base
   end
 
   def create_bootstrap_files
-    @javascripts = Configuration::JAVASCRIPT 
-    stylesheets = File.join Configuration::WEB_APP, "stylesheets"
-    images = File.join Configuration::WEB_APP, "images"
     copy_file("bootstrap/bootstrap.js", "#{@javascripts}/bootstrap.js")
-    copy_file("bootstrap/bootstrap.css", "#{stylesheets}/bootstrap.css")
-    copy_file("bootstrap/glyphicons-halflings-white.png", "#{images}/glyphicons-halflings-white.png")
-    copy_file("bootstrap/glyphicons-halflings.png", "#{images}/glyphicons-halflings.png")
+    copy_file("bootstrap/bootstrap.css", "#{@stylesheets}/bootstrap.css")
+    copy_file("bootstrap/glyphicons-halflings-white.png", "#{@images}/glyphicons-halflings-white.png")
+    copy_file("bootstrap/glyphicons-halflings.png", "#{@images}/glyphicons-halflings.png")
   end
 
   def create_angular_files
