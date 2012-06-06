@@ -47,8 +47,9 @@ class DependencyManager
 
     dependencies += [Dependency.new("org.hibernate", "hibernate-validator", "4.2.0.Final"),
                      Dependency.new("joda-time", "joda-time", "2.0"),
+                     Dependency.new("com.thoughtworks.xstream", "xstream", "1.4.1"),
                      Dependency.new("com.google.code.gson", "gson", "2.2.1"),
-                     Dependency.new("com.thoughtworks.xstream", "xstream", "1.4.1")]
+                     Dependency.new("com.github.filipesperandio.vraptor", "vraptor-hypermedia", "3.4.0")]
     dependencies
   end
 

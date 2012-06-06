@@ -4,6 +4,7 @@ import java.util.List;
 
 import <%= Configuration.full_models_package %>.<%= class_name %>;
 import <%= Configuration.package %>.<%= Configuration.repositories_package %>.<%= repository_interface_name %>;
+import br.com.caelum.vraptor.Consumes;
 import br.com.caelum.vraptor.Delete;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
@@ -12,84 +13,97 @@ import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.Validator;
 import br.com.caelum.vraptor.view.Results;
-import com.google.gson.Gson;
+import com.github.filipesperandio.vraptor.hypermedia.HypermediaSerializationJSON;
 
 @Resource
 public class <%= controller_class_name %> {
 
-	private final Result result;
-	private final <%= repository_interface_name %> repository;
-	private final Validator validator;
-  private final Gson json;
-	
-	<%= controller_class_name %>(Result result, <%= repository_interface_name %> repository, Validator validator) {
-		this.result = result;
-		this.repository = repository;
-		this.validator = validator;
-    this.json = new Gson();
-	}
-	
-	@Get("<%= path %>")
-	public List<<%= class_name %>> index() {
-    List<<%= class_name %> > list = repository.findAll();
-    result.include("json", json.toJson(list));
-    return repository.findAll();
+  protected final Result result;
+  protected final <%= repository_interface_name %> repository;
+  protected final Validator validator;
+  protected final HypermediaSerializationJSON json;
+
+  public <%= controller_class_name %>(Result result, <%= repository_interface_name %> repository, Validator validator, HypermediaSerializationJSON json) {
+    this.result = result;
+    this.repository = repository;
+    this.validator = validator;
+    this.json = json;
+  }
+
+  @Get("<%= path %>")
+  public List<<%= class_name %>> index() {
+    List<<%= class_name %> > list = findAll();
+    includeJson(list);
+    return list;
   }
 
   @Get("<%= path %>.json")
   public void indexJson() {
-    result.use(Results.json()).withoutRoot().from(index()).recursive().serialize();
+    serialize(findAll());
   }
-	
-	@Post("<%= path %>")
-	public void create(<%= class_name %> <%= model_parameter_name %>) {
-		validator.validate(<%= model_parameter_name %>);
-		validator.onErrorUsePageOf(this).new<%= class_name %>();
-		repository.create(<%= model_parameter_name %>);
-		result.redirectTo(this).index();
-	}
-	
-	@Get("<%= "#{path}/new" %>")
-	public <%= class_name %> new<%= class_name %>() {
+
+  @Post("<%= path %>")
+  public void create(<%= class_name %> <%= model_parameter_name %>) {
+    validator.validate(<%= model_parameter_name %>);
+    validator.onErrorUsePageOf(this).new<%= class_name %>();
+    repository.create(<%= model_parameter_name %>);
+    result.redirectTo(this).index();
+  }
+
+  @Get("<%= "#{path}/new" %>")
+  public <%= class_name %> new<%= class_name %>() {
     <%= class_name %> <%= model_parameter_name %> = new <%= class_name %>();
-    result.include("json", json.toJson(<%= model_parameter_name %>));
+    includeJson(<%= model_parameter_name %>);
     return <%= model_parameter_name %>;
-	}
-	
-	@Put("<%= path %>")
-	public void update(<%= class_name %> <%= model_parameter_name %>) {
-		validator.validate(<%= model_parameter_name %>);
-		validator.onErrorUsePageOf(this).edit(<%= model_parameter_name %>);
-		repository.update(<%= model_parameter_name %>);
-		result.redirectTo(this).index();
-	}
-	
-	@Get("<%= "#{path}/{#{model_parameter_name}.id}/edit" %>")
-	public <%= class_name %> edit(<%= class_name %> <%= model_parameter_name %>) {
-    <%= model_parameter_name %> = repository.find(<%= model_parameter_name %>.getId());
-    result.include("json", json.toJson(<%= model_parameter_name %>));
-    return <%= model_parameter_name %>;
-	}
+  }
 
-	@Get("<%= "#{path}/{#{model_parameter_name}.id}.json" %>")
-	public void showJson(<%= class_name %> <%= model_parameter_name %>) {
+  @Consumes({ "application/json", "application/x-www-form-urlencoded" })
+  @Put("<%= path %>")
+  public void update(<%= class_name %> <%= model_parameter_name %>) {
+    validator.validate(<%= model_parameter_name %>);
+    validator.onErrorUsePageOf(this).edit(<%= model_parameter_name %>);
+    repository.update(<%= model_parameter_name %>);
+    result.redirectTo(this).index();
+  }
+
+  @Get("<%= "#{path}/{#{model_parameter_name}.id}/edit" %>")
+  public <%= class_name %> edit(<%= class_name %> <%= model_parameter_name %>) {
+    <%= model_parameter_name %> = find(<%= model_parameter_name %>);
+    includeJson(<%= model_parameter_name %>);
+    return <%= model_parameter_name %>;
+  }
+
+  @Get("<%= "#{path}/{#{model_parameter_name}.id}.json" %>")
+  public void showJson(<%= class_name %> <%= model_parameter_name %>) {
     serialize(show(<%= model_parameter_name %>));
-	}
+  }
 
-	@Get("<%= "#{path}/{#{model_parameter_name}.id}" %>")
-	public <%= class_name %> show(<%= class_name %> <%= model_parameter_name %>) {
-    <%= model_parameter_name %> = repository.find(<%= model_parameter_name %>.getId());
-    result.include("json", json.toJson(<%= model_parameter_name %>));
+  @Get("<%= "#{path}/{#{model_parameter_name}.id}" %>")
+  public <%= class_name %> show(<%= class_name %> <%= model_parameter_name %>) {
+    <%= model_parameter_name %> = find(<%= model_parameter_name %>);
+    includeJson(<%= model_parameter_name %>);
     return <%= model_parameter_name %>;
-	}
+  }
 
-	@Delete("<%= "#{path}/{#{model_parameter_name}.id}" %>")
-	public void destroy(<%= class_name %> <%= model_parameter_name %>) {
-		repository.destroy(repository.find(<%= model_parameter_name %>.getId()));
-		result.redirectTo(this).index();  
-	}
+  @Delete("<%= "#{path}/{#{model_parameter_name}.id}" %>")
+  public void destroy(<%= class_name %> <%= model_parameter_name %>) {
+    repository.destroy(find(<%= model_parameter_name %>));
+    result.redirectTo(this).index();  
+  }
 
   private void serialize(Object object) {
-    result.use(Results.json()).withoutRoot().from(object).recursive().serialize();
+    result.use(Results.json()).from(object).recursive().serialize();
+  }
+
+  private List<<%= class_name %>> findAll() {
+    return repository.findAll();
+  }
+
+  private <%= class_name %> find(<%= class_name %> <%= model_parameter_name %>) {
+    return repository.find(<%= model_parameter_name %>.getIt());
+  }
+
+  private void includeJson(Object o) {
+    result.include("json", json.toJson(o));
   }
 }

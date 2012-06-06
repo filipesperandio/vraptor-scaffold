@@ -1,13 +1,19 @@
-var <%= controller_class_name %> = function($scope, $http) {
-  $scope.<%= model_list_name %> = function() { return window.<%= model_list_name %> }();
-  $scope.<%= model_parameter_name %> = function() { return window.<%= model_parameter_name %> }();
+var <%= controller_class_name %> = function($scope, $http, wire) {
+  $scope.<%= model_list_name %> = wire;
+  $scope.<%= model_parameter_name %> = wire[0] || {};
 
-  // Maybe routes is a better place
-  $scope.creation_path = '<%= "#{path}/new" %>';
-
-  $scope.list = function() {
-  $http.get('<%= path %>.json').success(function(data) {
-      $scope.<%= model_list_name %> = data;
-    });
-  }
+  $scope.show = function(user) {
+     console.log("SHOW USER");
+     console.log(user);
+  };
+    
+  $scope.edit = function(user) {
+     console.log("EDIT USER");
+     console.log(user);
+  };
+       
+  $scope.destroy = function(user) {
+      console.log("DESTROY USER");
+      console.log(user);
+  };
 }

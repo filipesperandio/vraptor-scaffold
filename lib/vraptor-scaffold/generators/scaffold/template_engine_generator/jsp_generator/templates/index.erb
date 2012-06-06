@@ -1,19 +1,17 @@
 <head>
-  <script src="<%="/javascripts/#{class_name}.js"%>"></script>
   <script src="<%="/javascripts/#{controller_class_name}.js"%>"></script>
+  <script>
+    angular.module('AppModule', []).
+    factory('wire', [function() {
+      return ${json};
+    }]);
+    <%= controller_class_name %>.$inject = ['$scope', '$http', 'wire'];
+  </script>
 </head>
 
 <header class="jumbotron subhead" id="overview">
 	<h1>Listing <%=model_parameter_name.pluralize%></h1>
 </header>
-
-<script>
-  <%=model_list_name%> = [];
-  var list = ${json};
-  for(var i=0; i < list.length; i++) {
-    <%=model_list_name%>.push(new <%= class_name %>(list[i]));
-  }
-</script>
 
 <div class="row" ng-controller="<%=controller_class_name%>">
 	<div class="span8">

@@ -10,6 +10,11 @@
 		<param-value><%= @vraptor_packages * "," %></param-value>
 	</context-param>
 
+  <context-param>
+    <param-name>br.com.caelum.vraptor.provider</param-name>
+    <param-value>com.github.filipesperandio.vraptor.hypermedia.HypermediaProvider</param-value>
+  </context-param>
+
 	<context-param>
 		<param-name>br.com.caelum.vraptor.encoding</param-name>
 		<param-value>UTF-8</param-value>

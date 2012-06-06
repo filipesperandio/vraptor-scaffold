@@ -1,19 +1,21 @@
 <head>
-  <script src="<%="/javascripts/#{class_name}.js"%>"></script>
   <script src="<%="/javascripts/#{controller_class_name}.js"%>"></script>
+  <script>
+    angular.module('AppModule', []).
+    factory('wire', [function() {
+      return ${json};
+    }]);
+    <%= controller_class_name %>.$inject = ['$scope', '$http', 'wire'];
+  </script>
 </head>
 
 <c:if test="${not empty errors}">
-<c:forEach items="${errors}" var="error">
-<div class="control-group error">
-  <label class="control-label" for="inputError"> ${error.category} - ${error.message}</label>
-</div>
-</c:forEach>
+  <c:forEach items="${errors}" var="error">
+    <div class="control-group error">
+      <label class="control-label" for="inputError"> ${error.category} - ${error.message}</label>
+    </div>
+  </c:forEach>
 </c:if>
-
-<script>
-  <%=model_parameter_name%> = ${json};
-</script>
 
 <div class="row" ng-controller="<%=controller_class_name%>">
   <div class="span6">
