@@ -1,5 +1,5 @@
 <ivy-module version="2.0">
-	<info organisation="ant" module="ant" />
+	<info organisation="vraptor-scaffold" module="vraptor-scaffold" />
 
 	<configurations>
 		<conf name="default" description="dependencies used for compile" />
@@ -10,7 +10,6 @@
 	</configurations>
 
 	<dependencies>
-		<dependency org="br.com.caelum.vraptor.plugin" name="vraptor-environment" rev="0.0.8" conf="default" />
 		<dependency org="br.com.caelum" name="vraptor" rev="3.4.0" conf="default" />
 		<dependency org="opensymphony" name="sitemesh" rev="2.4.2" conf="default" />
 		<dependency org="javax.servlet" name="jstl" rev="1.2" conf="default" />
@@ -20,6 +19,8 @@
 		<dependency org="org.hibernate" name="hibernate-validator" rev="4.2.0.Final" conf="default" />
 		<dependency org="joda-time" name="joda-time" rev="2.0" conf="default" />
 		<dependency org="com.thoughtworks.xstream" name="xstream" rev="1.4.1" conf="default" />
+		<dependency org="com.google.code.gson" name="gson" rev="2.2.1" conf="default" />
+		<dependency org="com.github.filipesperandio.vraptor" name="vraptor-hypermedia" rev="3.4.0" conf="default" />
 
 		<!-- Provided dependencies -->
 		<dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="provided->default" />
