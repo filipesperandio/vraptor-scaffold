@@ -100,7 +100,7 @@ public class <%= controller_class_name %> {
   }
 
   private <%= class_name %> find(<%= class_name %> <%= model_parameter_name %>) {
-    return repository.find(<%= model_parameter_name %>.getIt());
+    return repository.find(<%= model_parameter_name %>.getId());
   }
 
   private void includeJson(Object o) {
