@@ -10,7 +10,7 @@ class Attribute
   def html_input
     input = "text"
     input = "checkbox" if boolean?
-    input = "textarea" if type.eql?("text")
+    input = "textarea" if text?
     input
   end
 
@@ -21,7 +21,7 @@ class Attribute
   def java_type
     java = type.capitalize
     java = "boolean" if boolean?
-    java = "String" if type.eql?("text")
+    java = "String" if text?
     java
   end
 
@@ -30,7 +30,11 @@ class Attribute
   end
 
   def boolean?
-    type.eql? "boolean"
+    @type.eql? "boolean"
+  end
+
+  def text?
+      @type.eql? "text"
   end
 
   def getter_prefix

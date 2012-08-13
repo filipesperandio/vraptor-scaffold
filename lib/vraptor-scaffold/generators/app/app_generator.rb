@@ -1,14 +1,8 @@
 class AppGenerator < VraptorScaffold::Base
 
-  TEMPLATE_ENGINES = %w( jsp ftl )
-  BUILD_TOOLS = %w( ant mvn gradle )
-  ORMS = %w( jpa hibernate objectify )
-  IVY_JAR = "ivy-2.2.0.jar"
+  ORMS = %w( jpa hibernate )
 
   argument :project_path
-
-  class_option :template_engine, :default => "jsp", :aliases => "-e",
-               :desc => "Template engine (options: #{TEMPLATE_ENGINES.join(', ')})"
 
   class_option :package, :default => "app", :aliases => "-p",
                :desc => "Define base package"
@@ -19,26 +13,11 @@ class AppGenerator < VraptorScaffold::Base
   class_option :controllers_package, :aliases => "-c", :default => "controllers",
                :desc => "Define controllers package"
 
-  class_option :heroku, :type => :boolean, :aliases => "-h",
-               :desc => "heroku project"
-
-  class_option :gae, :type => :boolean, :aliases => "-g",
-               :desc => "google app engine project"
-
   class_option :repositories_package, :aliases => "-r", :default => "repositories",
                :desc => "Define repositories package"
 
-  class_option :build_tool, :default => "ant", :aliases => "-b",
-               :desc => "Build tools (options: #{BUILD_TOOLS.join(', ')})"
-
   class_option :orm, :default => "jpa", :aliases => "-o",
                :desc => "Object-relational mapping (options: #{ORMS.join(', ')})"
-
-  class_option :jquery, :aliases => "-j", :default => "latest version",
-               :desc => "jQuery version"
-
-  class_option :skip_eclipse, :type => :boolean, :aliases => "-E",
-               :desc => "Skip Eclipse files"
 
   def self.source_root
     File.join File.dirname(__FILE__), "templates"
@@ -56,50 +35,29 @@ class AppGenerator < VraptorScaffold::Base
     @dependency_manager = DependencyManager.new(options)
     @javascripts = Configuration::JAVASCRIPTS
     @stylesheets = Configuration::STYLESHEETS
-    @images = File.join Configuration::WEB_APP, "images"
+    @images = Configuration::IMAGES
+    @img = File.join Configuration::WEB_APP, "img"
   end
 
   def create_root_folder
     empty_directory "."
-    if @options[:heroku]
-      copy_file("heroku/Procfile", "Procfile")
-    end
+    copy_file("heroku/Procfile", "Procfile")
   end
 
   def configure_maven
-    template("pom.erb", "pom.xml") if build_tool == "mvn"
-  end
-
-  def configure_ant
-    if build_tool == "ant"
-      create_eclipse_files unless options[:skip_eclipse]
-      copy_file("build.xml")
-      template("build.properties.erb", "build.properties")
-      template("ivy.erb", "ivy.xml")
-      copy_file(IVY_JAR)
-    end
-    if options[:gae]
-      copy_file("gae/ivysettings.xml", "ivysettings.xml")
-    end
-  end
-
-  def configure_gradle
-    template("build.gradle.erb", "build.gradle") if build_tool == "gradle"
+    template("pom.erb", "pom.xml") 
   end
 
   def configure_vraptor_packages
     vraptor_util_package = "br.com.caelum.vraptor"
     @vraptor_packages = []
     @vraptor_packages += ["#{vraptor_util_package}.util.#{orm}"] if orm == "jpa" or orm == "hibernate"
-    @vraptor_packages += ["#{vraptor_util_package}.gae"] if options[:gae]
   end
 
   def create_main_java
     empty_directory Configuration::MAIN_SRC
     @src = File.join(Configuration::MAIN_SRC, options[:package].gsub(".", File::Separator))
-    if @options[:heroku]
-      copy_file("heroku/Main.java", "#{Configuration::MAIN_SRC}/Main.java")
-    end
+    copy_file("heroku/Main.java", "#{Configuration::MAIN_SRC}/Main.java")
   end
 
   def create_controllers_directory
@@ -109,17 +67,13 @@ class AppGenerator < VraptorScaffold::Base
   def create_models_directory
     models_folder = File.join @src, options[:models_package]
     empty_directory models_folder
-    template("models/Entity.erb", "#{models_folder}/Entity.java") unless options[:gae]
+    template("models/Entity.erb", "#{models_folder}/Entity.java") 
   end
 
   def create_repositories_directory
     repositories_folder = File.join @src, options[:repositories_package]
     empty_directory repositories_folder
-    if options[:gae]
-      template("orm/Repository-objectify.java.tt", "#{repositories_folder}/Repository.java")
-    else
-      template("orm/Repository-#{orm}.java.tt", "#{repositories_folder}/Repository.java")
-    end
+    template("orm/Repository-#{orm}.java.tt", "#{repositories_folder}/Repository.java")
   end
 
   def create_main_resources
@@ -129,10 +83,6 @@ class AppGenerator < VraptorScaffold::Base
   def configure_orm
     if (orm == "hibernate")
       copy_file("orm/hibernate.cfg.xml", (File.join Configuration::MAIN_RESOURCES, "hibernate.cfg.xml"))
-    elsif orm == "objectify"
-      infra_folder = File.join @src, "infra"
-      empty_directory infra_folder
-      template("gae/ObjectifyFactory.java.tt", "#{@src}/infra/ObjectifyFactory.java")
     else
       metainf = File.join Configuration::MAIN_RESOURCES, 'META-INF'
       empty_directory metainf
@@ -142,88 +92,64 @@ class AppGenerator < VraptorScaffold::Base
 
   def create_webapp
     directory("webapp", Configuration::WEB_APP)
-    if @options[:gae]
-      template("gae/appengine-web.xml.tt", "#{Configuration::WEB_INF}/appengine-web.xml")
-      copy_file("gae/logging.properties", "#{Configuration::WEB_INF}/logging.properties")
-    end
   end
 
   def create_javascripts
     create_file File.join @javascripts, "application.js"
-    add_file (File.join @javascripts, "jquery.min.js"), get_jquery.body
   end
 
   def configure_scaffold_properties
     template("vraptor-scaffold.erb", Configuration::FILENAME)
   end
 
-  def configure_template_engine
-    templates = {"jsp" => JspTemplateEngine, "ftl" => FreemarkerTemplateEngine}
-    templates[options[:template_engine]].new(project_path, @options).configure if templates[options[:template_engine]]
-  end
-
   def create_test
     empty_directory Configuration::TEST_SRC
     test_src = File.join(Configuration::TEST_SRC, options[:package].gsub(".", File::Separator))
-
     empty_directory File.join test_src, options[:controllers_package]
     empty_directory File.join test_src, options[:models_package]
     empty_directory File.join test_src, options[:repositories_package]
-
     directory("resources-test", Configuration::TEST_RESOURCES)
   end
 
+  def create_jquery_files
+    copy_file("jquery/jquery.min.js", "#{@javascripts}/jquery.min.js")
+  end
+
   def create_bootstrap_files
+    empty_directory @img
     copy_file("bootstrap/bootstrap.js", "#{@javascripts}/bootstrap.js")
     copy_file("bootstrap/bootstrap.css", "#{@stylesheets}/bootstrap.css")
-    copy_file("bootstrap/glyphicons-halflings-white.png", "#{@images}/glyphicons-halflings-white.png")
-    copy_file("bootstrap/glyphicons-halflings.png", "#{@images}/glyphicons-halflings.png")
+    copy_file("bootstrap/bootstrap-responsive.css", "#{@stylesheets}/bootstrap-responsive.css")
+    copy_file("bootstrap/glyphicons-halflings-white.png", "#{@img}/glyphicons-halflings-white.png")
+    copy_file("bootstrap/glyphicons-halflings.png", "#{@img}/glyphicons-halflings.png")
   end
 
   def create_angular_files
     copy_file("angular/angular.js", "#{@javascripts}/angular.js")
   end
 
-  private
-  def build_tool
-    return "mvn" if options[:heroku]
-    return "ant" if options[:gae]
-    options[:build_tool]
+  def create_underscore_files
+    copy_file("underscore/underscore.min.js", "#{@javascripts}/underscore.min.js")
   end
 
-  def orm
-    return "objectify" if options[:gae]
-    options[:orm]
+  def create_frontend_directory
+    empty_directory Configuration::FRONTEND
   end
 
   def create_eclipse_files
-    if options[:gae]
-      template("eclipse/classpath-gae.erb", ".classpath")
-      template("eclipse/project-gae.erb", ".project")
-      directory("eclipse/settings-gae", ".settings")
-    else
-      template("eclipse/classpath.erb", ".classpath")
-      template("eclipse/project.erb", ".project")
-      directory("eclipse/settings", ".settings")
-    end
+    template("eclipse/classpath.erb", ".classpath")
+    template("eclipse/project.erb", ".project")
+    directory("eclipse/settings", ".settings")
+  end
+
+  private
+  def orm
+      options[:orm]
   end
 
   def validate
-    unless BUILD_TOOLS.include? options[:build_tool]
-      puts "Build tool #{options[:build_tool]} is not supported. The supported build tools are: #{BUILD_TOOLS.join(", ")}"
-      Kernel::exit
-    end
-    unless TEMPLATE_ENGINES.include? options[:template_engine]
-      puts "Template engine #{options[:template_engine]} is not supported. The supported template engines are: #{TEMPLATE_ENGINES.join(", ")}"
-      Kernel::exit
-    end
     unless ORMS.include? orm
       puts "ORM #{orm} is not supported. The supported object-relational mapping are: #{ORMS.join(", ")}"
-      Kernel::exit
-    end
-
-    if options[:heroku] and options[:gae]
-      puts "You cannot create gae and heroku template project together"
       Kernel::exit
     end
 
@@ -231,24 +157,5 @@ class AppGenerator < VraptorScaffold::Base
       puts "The project #{project_path} already exist"
       Kernel::exit
     end
-
-    if options[:jquery] != 'latest version'
-      case get_jquery
-      when Net::HTTPClientError, Net::HTTPServerError
-        download_url = "http://docs.jquery.com/Downloading_jQuery"
-        puts "jQuery version #{options[:jquery]} was not found. Please visit the download page to see the versions available #{download_url}."
-        Kernel::exit
-      end
-    end
-  end
-
-  def jquery_uri
-    jquery_version = "1" #this mean get latest version
-    jquery_version = options[:jquery] if options[:jquery] != 'latest version'
-    "/ajax/libs/jquery/#{jquery_version}/jquery.min.js"
-  end
-
-  def get_jquery
-    VraptorScaffold::HttpRequest.open_session("ajax.googleapis.com").get jquery_uri
   end
 end

@@ -4,6 +4,7 @@ class Configuration
   TEST_SRC = "src/test/java"
   TEST_RESOURCES = "src/test/resources"
   WEB_APP = "src/main/webapp"
+  FRONTEND = "#{WEB_APP}/templates"
   JAVASCRIPTS = "#{WEB_APP}/javascripts"
   STYLESHEETS = "#{WEB_APP}/stylesheets"
   IMAGES = "#{WEB_APP}/images"
@@ -13,10 +14,6 @@ class Configuration
 
   def self.config
     YAML.load_file FILENAME
-  end
-
-  def self.template_engine
-    config["template_engine"] ? config["template_engine"] : 'jsp'
   end
 
   def self.package

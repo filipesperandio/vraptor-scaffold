@@ -16,10 +16,7 @@ module VraptorScaffold
   COMMANDS = {"--help" => Runner::Generator,
               "-h" => Runner::Generator,
               "new" => Runner::Generator,
-              "scaffold" => Runner::Scaffold,
-              "plugin" => Runner::Plugin,
-              "start" => Runner::Start
-              #"configure" => Runner::Configure
-  }
+              "scaffold" => Runner::Scaffold
+             }
 
 end

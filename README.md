@@ -8,12 +8,16 @@ Check the original from at: http://github.com/caelum/vraptor-scaffold
 
 ### Usage
 
- (optional) rm -rf appName/
+```shell
+ rm -rf appName #(optional)
  vraptor new appName --heroku 
- cd appName/
+ cd appName
  vraptor scaffold User name:string desc:text
  mvn clean
  mvn package
  sh target/bin/webapp
  open http://localhost:8080/users
+```
 
+
+Testing...

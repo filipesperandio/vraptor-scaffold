@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="span6">
+        <div class="well">
+            <form class="form-horizontal" id="<%= model_parameter_name %>Form">
+                <fieldset>
+                    <legend><%= model_parameter_name %></legend>
+
+                    <% @attributes.each do |att| -%>
+                        <div class="control-group">
+                            <label class="control-label" 
+                                for="<%= model_parameter_name %>.<%= att.name %>"> <%= att.name.camelize %> </label>
+                            <div class="controls">
+                                <input type="text" name="<%= model_parameter_name %>.<%= att.name %>" 
+                                id="<%= model_parameter_name %>.<%= att.name %>" 
+                                ng-model="<%= model_parameter_name %>.<%= att.name %>" />
+                            </div>
+                        </div>
+                    <% end -%>
+
+                    <div class="form-actions">
+                        <div class="pull-right">
+                            <button class="btn btn-primary"
+                                ng-click="create(<%= model_parameter_name %>)"
+                                ng-hide="<%= model_parameter_name %>.id">Create</button>
+                            <button class="btn btn-primary" 
+                                ng-click="update(<%= model_parameter_name %>)" 
+                                ng-show="<%= model_parameter_name %>.id">Update</button>
+                            <a href="#/<%= model_list_name %>" class="btn">Cancel</a>
+                        </div>
+                    </div>
+
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <div class="span6"></div>
+</div>
+
+

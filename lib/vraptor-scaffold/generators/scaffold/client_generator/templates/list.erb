@@ -1,0 +1,40 @@
+<div>
+
+    <div class="row">
+        <div class="span12">
+            <div class="well">
+                <div class="row-fluid">
+                    <div class="span8">
+                        <h1><%= model_list_name %></h1>
+                    </div>
+                    <div class="span4">
+                        <a href="#/<%= model_list_name %>/new" class="btn btn-primary">New <%= class_name %></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-repeat="<%= model_parameter_name %> in <%= model_list_name %>">
+        <div class="span12">
+            <div class="well">
+                <div class="row-fluid">
+                    <div class="span8">
+                        <% @attributes.each do |att| -%>
+                            <%= att.name.camelize %>: {{<%= model_parameter_name %>.<%= att.name %>}}
+                            <br />
+                        <% end -%>
+                    </div>
+                    <div class="span4 controls admin">
+                        <a class="btn btn-info" href="#{{<%= model_parameter_name %>.links.location.url}}">show</a>
+                        <a class="btn btn-info" href="#{{<%= model_parameter_name %>.links.location.url}}/edit">edit</a>
+                        <a class="btn btn-inverse" ng-click="destroy(<%= model_parameter_name %>)">destroy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+

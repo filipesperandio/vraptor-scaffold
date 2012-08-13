@@ -1,0 +1,16 @@
+<div class="row">
+    <div class="span6">
+        <div class="well">
+            <% @attributes.each do |att| -%>
+                <p>
+                <b><%= att.name.camelize %>:</b> {{<%= model_parameter_name %>.<%= att.name %>}}
+                </p>
+                <br />
+            <% end -%>
+
+            <a class="btn" href="#/<%= model_list_name %>">Back</a>
+            <a class="btn btn-info" href="#{{<%= model_parameter_name %>.links.location.url}}">Edit</a>
+        </div>
+    </div>
+</div>
+

@@ -1,5 +1,8 @@
 package <%= Configuration.full_models_package %>;
 
+import <%= Configuration.package %>.<%= Configuration.controllers_package %>.<%= controller_class_name %>;
+import br.com.caelum.vraptor.restfulie.relation.RelationBuilder;
+
 @javax.persistence.Entity
 public class <%= class_name %> extends Entity {
 	
@@ -17,4 +20,13 @@ public class <%= class_name %> extends Entity {
 	}
 	
 <% end -%>
+
+    @Override
+    public void configureRelations(RelationBuilder builder) {
+        Class<<%= controller_class_name %>> controller = <%= controller_class_name %>.class;
+        builder.relation("location").uses(controller).show(this);
+        builder.relation("update").uses(controller).update(this);
+        builder.relation("destroy").uses(controller).destroy(this);
+    }
+
 }
