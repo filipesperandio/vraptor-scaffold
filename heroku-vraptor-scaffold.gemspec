@@ -3,14 +3,14 @@ $:.push File.expand_path("../lib", __FILE__)
 require "vraptor-scaffold/version"
 
 Gem::Specification.new do |s|
-  s.name        = "vraptor-scaffold"
+  s.name        = "heroku-vraptor-scaffold"
   s.version     = VraptorScaffold::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Rodolfo Liviero"]
-  s.email       = "rodolfoliviero@gmail.com"
-  s.homepage    = "http://github.com/caelum/vraptor-scaffold"
-  s.summary     = "VRaptor Scaffold."
-  s.description = "VRaptor scaffold extension to make it easier configuring new projects and plugins."
+  s.authors     = ["Filipe Esperandio", "Rodolfo Liviero"]
+  s.email       = "filipesperandio@gmail.com"
+  s.homepage    = "http://github.com/filipesperandio/vraptor-scaffold"
+  s.summary     = "Heroku Ready VRaptor Scaffold + Angular + Bootstrap"
+  s.description = "Extending VRaptor's default scaffold to make it easier configuring new projects for heroku deployment using Angular+Bootstrap in the fron end" 
   s.post_install_message = "Thank you for installing vraptor-scaffold. Please read http://github.com/caelum/vraptor-scaffold/blob/master/README.textile for more information."
   
   s.add_dependency('thor', '0.14.6')
